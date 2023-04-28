@@ -1,11 +1,20 @@
-import { GlobalStyles } from './styles';
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import { Home, Room } from './pages';
+import { PagesRoutes } from './constants';
+import { AppLayout, AppThemeProvider } from './components';
 
 const App = () => {
   return (
-    <>
-      <GlobalStyles />
-      <div>Test</div>
-    </>
+    <AppThemeProvider>
+      <AppLayout>
+        <BrowserRouter>
+          <Routes>
+            <Route path={PagesRoutes.Home} element={<Home />} />
+            <Route path={`${PagesRoutes.Room}/:id`} element={<Room />} />
+          </Routes>
+        </BrowserRouter>
+      </AppLayout>
+    </AppThemeProvider>
   );
 };
 
