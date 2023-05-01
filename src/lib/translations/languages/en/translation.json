@@ -4,6 +4,8 @@
         "or": "Or",
         "enterRoomTitle": "Room title",
         "join": "Join",
-        "createNewRoom": "Create new room"
+        "createNewRoom": "Create new room",
+        "en": "English",
+        "ru": "Русский"
     }
 }

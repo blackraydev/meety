@@ -24,7 +24,7 @@ export const Layout = styled.div`
   background: ${({ theme }) => theme.colors.main};
 `;
 
-export const Header = styled.div`
+export const Header = styled.header`
   position: absolute;
   top: 0;
   display: flex;

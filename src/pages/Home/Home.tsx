@@ -27,10 +27,12 @@ export const Home = () => {
           placeholder={t('enterRoomTitle')}
           onChange={(e) => setRoomTitle(e.target.value)}
         />
-        <UI.JoinButton onClick={handleJoinRoom} content={t('join')} disabled={!roomTitle} />
+        <UI.JoinButton onClick={handleJoinRoom} disabled={!roomTitle}>
+          {t('join')}
+        </UI.JoinButton>
       </UI.JoinWrapper>
       <UI.Text>{t('or')}</UI.Text>
-      <UI.JoinButton onClick={handleCreateRoom} content={t('createNewRoom')} />
+      <UI.JoinButton onClick={handleCreateRoom}>{t('createNewRoom')}</UI.JoinButton>
     </UI.Home>
   );
 };

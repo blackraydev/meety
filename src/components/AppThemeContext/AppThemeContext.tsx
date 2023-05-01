@@ -1,7 +1,7 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { DefaultTheme, ThemeProvider } from 'styled-components';
 import { DarkTheme, LightTheme } from '../../constants';
-import { DefaultProps } from '../../types/common';
+import { DefaultProps } from '../../types';
 import { getCachedTheme, setCachedTheme } from './AppThemeContext.utils';
 
 type AppThemeContextType = {

@@ -4,6 +4,8 @@
         "or": "Или",
         "enterRoomTitle": "Название комнаты",
         "join": "Войти",
-        "createNewRoom": "Создать комнату"
+        "createNewRoom": "Создать комнату",
+        "en": "English",
+        "ru": "Русский"
     }
 }
