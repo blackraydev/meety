@@ -1,5 +1,5 @@
 import styled, { css } from 'styled-components';
-import { FaChevronUp } from 'react-icons/fa';
+import { FaChevronDown } from 'react-icons/fa';
 
 type SelectStyleProps = {
   isOpen: boolean;
@@ -42,7 +42,7 @@ export const SelectButton = styled.button`
 `;
 
 export const OptionsList = styled.ul`
-  transition: 0.3s ease;
+  transition: 0.2s ease;
   z-index: 1;
   text-align: center;
   position: absolute;
@@ -65,6 +65,6 @@ export const OptionItem = styled.li`
   }
 `;
 
-export const ChevronIcon = styled(FaChevronUp)`
+export const ChevronIcon = styled(FaChevronDown)`
   transition: 0.2s ease;
 `;
