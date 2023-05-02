@@ -4,16 +4,38 @@ type ThemeTogglerStyleProps = {
   isDarkTheme: boolean;
 };
 
+export const ThemeToggler = styled.div<ThemeTogglerStyleProps>`
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+
+  ${({ isDarkTheme }) => css`
+    ${SunAndMoon} {
+      transform: rotate(${isDarkTheme ? 90 : 40}deg);
+    }
+    ${MoonCircle} {
+      cx: ${isDarkTheme ? 100 : 60}%;
+      cy: ${isDarkTheme ? 0 : 25}%;
+    }
+    ${Sun} {
+      r: ${isDarkTheme ? 5 : 9};
+    }
+    ${SunBeams} {
+      opacity: ${isDarkTheme ? 1 : 0};
+    }
+  `}
+`;
+
 export const SunAndMoon = styled.svg`
   transition: 0.2s ease;
   width: 32px;
   height: 32px;
-  fill: none;
-  color: ${({ theme }) => theme.colors.icon};
   stroke-width: 2;
   stroke-linecap: round;
   stroke-linejoin: round;
   stroke: currentColor;
+  fill: none;
+  color: ${({ theme }) => theme.colors.icon};
 `;
 
 export const Moon = styled.mask``;
@@ -40,25 +62,3 @@ export const SunBeams = styled.g`
 `;
 
 export const SunBeamLine = styled.line``;
-
-export const ThemeToggler = styled.div<ThemeTogglerStyleProps>`
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-
-  ${({ isDarkTheme }) => css`
-    ${SunAndMoon} {
-      transform: rotate(${isDarkTheme ? 90 : 40}deg);
-    }
-    ${MoonCircle} {
-      cx: ${isDarkTheme ? 100 : 60}%;
-      cy: ${isDarkTheme ? 0 : 25}%;
-    }
-    ${Sun} {
-      r: ${isDarkTheme ? 5 : 9};
-    }
-    ${SunBeams} {
-      opacity: ${isDarkTheme ? 1 : 0};
-    }
-  `}
-`;

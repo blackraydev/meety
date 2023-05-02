@@ -21,20 +21,23 @@ export const Select = ({ options, value, onChange, placeholder }: SelectProps) =
     onChange(selectedValue);
   };
 
+  const handleSelectBlur = () => {
+    setIsOpen(false);
+  };
+
   return (
-    <UI.SelectWrapper>
+    <UI.Select onBlur={handleSelectBlur} isOpen={isOpen}>
       <UI.SelectButton onClick={() => setIsOpen(!isOpen)}>
         {options.find((option) => option.value === value)?.label || placeholder}
+        <UI.ChevronIcon />
       </UI.SelectButton>
-      {isOpen && (
-        <UI.OptionsList>
-          {options.map((option) => (
-            <UI.OptionItem key={option.value} onClick={() => handleOptionClick(option.value)}>
-              {option.label}
-            </UI.OptionItem>
-          ))}
-        </UI.OptionsList>
-      )}
-    </UI.SelectWrapper>
+      <UI.OptionsList>
+        {options.map((option) => (
+          <UI.OptionItem key={option.value} onClick={() => handleOptionClick(option.value)}>
+            {option.label}
+          </UI.OptionItem>
+        ))}
+      </UI.OptionsList>
+    </UI.Select>
   );
 };

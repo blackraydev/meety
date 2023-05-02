@@ -1,10 +1,25 @@
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
+import { FaChevronUp } from 'react-icons/fa';
 
-export const SelectWrapper = styled.div`
+type SelectStyleProps = {
+  isOpen: boolean;
+};
+
+export const Select = styled.div<SelectStyleProps>`
   display: flex;
   align-items: center;
   position: relative;
   margin-right: 20px;
+
+  ${({ isOpen }) => css`
+    ${OptionsList} {
+      opacity: ${isOpen ? 1 : 0};
+      transform: translateY(${isOpen ? 10 : 0}px);
+    }
+    ${ChevronIcon} {
+      transform: rotate(${isOpen ? 180 : 0}deg);
+    }
+  `}
 `;
 
 export const SelectButton = styled.button`
@@ -19,6 +34,7 @@ export const SelectButton = styled.button`
   padding: 16px;
   height: 48px;
   cursor: pointer;
+  gap: 6px;
 
   &:hover {
     background: ${({ theme }) => theme.colors.primaryHover};
@@ -26,10 +42,11 @@ export const SelectButton = styled.button`
 `;
 
 export const OptionsList = styled.ul`
+  transition: 0.3s ease;
   z-index: 1;
   text-align: center;
   position: absolute;
-  top: 110%;
+  top: 100%;
   left: 0;
   width: 100%;
   background: ${({ theme }) => theme.colors.primary};
@@ -46,4 +63,8 @@ export const OptionItem = styled.li`
   &:hover {
     background: ${({ theme }) => theme.colors.primaryHover};
   }
+`;
+
+export const ChevronIcon = styled(FaChevronUp)`
+  transition: 0.2s ease;
 `;
