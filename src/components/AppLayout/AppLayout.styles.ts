@@ -1,4 +1,5 @@
 import styled, { createGlobalStyle } from 'styled-components';
+import { Select } from '../../UI';
 
 export const GlobalStyles = createGlobalStyle`
   *,
@@ -29,7 +30,7 @@ export const Header = styled.header`
   top: 0;
   display: flex;
   width: 100%;
-  padding: 20px 40px;
+  padding: 20px 50px;
   justify-content: flex-end;
 `;
 
@@ -40,4 +41,13 @@ export const Content = styled.div`
   align-items: center;
   width: 100%;
   min-height: 100vh;
+`;
+
+export const LanguageSelect = styled(Select)`
+  margin-right: 25px;
+
+  button,
+  ul {
+    word-spacing: 5px;
+  }
 `;

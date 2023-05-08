@@ -3,6 +3,7 @@ import styled from 'styled-components';
 export const Loader = styled.div`
   position: relative;
   width: 48px;
+  z-index: 1000;
 
   &:before {
     content: '';

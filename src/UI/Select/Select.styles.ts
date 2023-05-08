@@ -7,19 +7,27 @@ type SelectStyleProps = {
 
 export const Select = styled.div<SelectStyleProps>`
   display: flex;
-  align-items: center;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-start;
   position: relative;
-  margin-right: 20px;
 
   ${({ isOpen }) => css`
     ${OptionsList} {
       opacity: ${isOpen ? 1 : 0};
       transform: translateY(${isOpen ? 10 : 0}px);
+      visibility: ${!isOpen && 'hidden'};
     }
     ${ChevronIcon} {
       transform: rotate(${isOpen ? 180 : 0}deg);
     }
   `}
+`;
+
+export const Label = styled.span`
+  font-size: 16px;
+  color: ${({ theme }) => theme.colors.gray};
+  margin-bottom: 5px;
 `;
 
 export const SelectButton = styled.button`
@@ -44,11 +52,9 @@ export const SelectButton = styled.button`
 export const OptionsList = styled.ul`
   transition: 0.2s ease;
   z-index: 1;
-  text-align: center;
   position: absolute;
   top: 100%;
   left: 0;
-  width: 100%;
   background: ${({ theme }) => theme.colors.primary};
   border-radius: 16px;
   overflow: hidden;
@@ -56,7 +62,7 @@ export const OptionsList = styled.ul`
 
 export const OptionItem = styled.li`
   cursor: pointer;
-  padding: 12px;
+  padding: 12px 16px;
   background: ${({ theme }) => theme.colors.primary};
   color: ${({ theme }) => theme.colors.primaryText};
 
@@ -67,4 +73,5 @@ export const OptionItem = styled.li`
 
 export const ChevronIcon = styled(FaChevronDown)`
   transition: 0.2s ease;
+  color: ${({ theme }) => theme.colors.gray};
 `;

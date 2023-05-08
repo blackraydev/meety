@@ -1,6 +1,5 @@
 import { useTranslation } from 'react-i18next';
 import { ThemeToggler } from '../ThemeToggler';
-import { Select } from '../../UI';
 import { changeLanguage, getCurrentLanguage } from '../../lib';
 import { DefaultProps } from '../../types';
 import { Languages } from '../../constants';
@@ -13,7 +12,7 @@ export const AppLayout = ({ children }: DefaultProps) => {
     <UI.Layout>
       <UI.GlobalStyles />
       <UI.Header>
-        <Select
+        <UI.LanguageSelect
           value={Languages[getCurrentLanguage()]}
           onChange={(value) => changeLanguage(value as Languages)}
           options={Object.values(Languages).map((language) => ({

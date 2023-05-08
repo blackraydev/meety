@@ -11,9 +11,18 @@ type SelectProps = {
   options: SelectOption[];
   onChange: (value: string) => void;
   placeholder?: string;
+  label?: string;
+  className?: string;
 };
 
-export const Select = ({ options, value, onChange, placeholder }: SelectProps) => {
+export const Select = ({
+  options,
+  value,
+  onChange,
+  placeholder,
+  label,
+  className,
+}: SelectProps) => {
   const [isOpen, setIsOpen] = useState(false);
 
   const handleOptionClick = (selectedValue: string) => {
@@ -26,7 +35,8 @@ export const Select = ({ options, value, onChange, placeholder }: SelectProps) =
   };
 
   return (
-    <UI.Select onBlur={handleSelectBlur} isOpen={isOpen}>
+    <UI.Select onBlur={handleSelectBlur} isOpen={isOpen} className={className}>
+      <UI.Label>{label}</UI.Label>
       <UI.SelectButton onClick={() => setIsOpen(!isOpen)}>
         {options.find((option) => option.value === value)?.label || placeholder}
         <UI.ChevronIcon />

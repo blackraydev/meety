@@ -1,11 +1,24 @@
 {
     "translation": {
+        "en": "🇺🇸 English",
+        "ru": "🇷🇺 Русский",
         "youCanJoin": "You can join existing room",
         "or": "Or",
         "enterRoomTitle": "Room title",
         "join": "Join",
         "createNewRoom": "Create new room",
-        "en": "English",
-        "ru": "Русский"
+        "settings": "Settings",
+        "microphone": "Microphone",
+        "camera": "Camera",
+        "start": "Start",
+        "stop": "Stop",
+        "turnOn": "Turn on",
+        "turnOff": "Turn off",
+        "toggleScreenShare": "{{toggle}} screen sharing",
+        "toggleMicrophone": "{{toggle}} microphone",
+        "toggleCamera": "{{toggle}} camera",
+        "leaveRoom": "Leave room",
+        "openSettings": "Open settings",
+        "switchTheme": "Switch theme"
     }
 }

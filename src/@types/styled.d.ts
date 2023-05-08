@@ -12,6 +12,7 @@ declare module 'styled-components' {
       errorHover: string;
       primaryDisabled: string;
       primaryText: string;
+      secondaryText: string;
       placeholderText: string;
       icon: string;
       white: string;
