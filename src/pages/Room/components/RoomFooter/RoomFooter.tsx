@@ -5,8 +5,8 @@ import { IoVideocam, IoVideocamOff } from 'react-icons/io5';
 import { MdOutlineScreenShare, MdOutlineStopScreenShare } from 'react-icons/md';
 import { useRoom } from '../RoomContext';
 import { PreferencesModal } from './components';
-import * as UI from './RoomFooter.styles';
 import { useTranslation } from 'react-i18next';
+import * as UI from './RoomFooter.styles';
 
 const iconProps = {
   size: 20,
@@ -16,12 +16,12 @@ export const RoomFooter = () => {
   const {
     cameraActive,
     micActive,
-    screenShareActive,
     toggleCamera,
     toggleMic,
-    leaveRoom,
+    screenShareActive,
     startScreenShare,
     stopScreenShare,
+    leaveRoom,
   } = useRoom();
   const { t } = useTranslation();
   const [settingsOpen, setSettingsOpen] = useState(false);

@@ -16,6 +16,11 @@ export const RoomContent = styled.div`
 `;
 
 export const ScreenShareVideo = styled(Video)<ScreenShareVideoStyleProps>`
-  transform: rotate(0);
   display: ${({ screenShareActive }) => (screenShareActive ? 'flex' : 'none')};
+
+  video {
+    width: 720px;
+    height: 350px;
+    transform: rotate(0);
+  }
 `;
