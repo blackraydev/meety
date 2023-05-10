@@ -24,7 +24,7 @@ export const Home = () => {
       <UI.JoinWrapper>
         <UI.JoinInput
           value={roomTitle}
-          placeholder={t('enterRoomTitle')}
+          placeholder={t('roomTitle')}
           onChange={(e) => setRoomTitle(e.target.value)}
         />
         <UI.JoinButton onClick={handleJoinRoom} disabled={!roomTitle}>

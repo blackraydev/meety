@@ -11,6 +11,7 @@ export const ModalWrapper = styled.div`
   width: 100%;
   height: 100%;
   background: rgb(0, 0, 0, 0.2);
+  z-index: 1000;
 `;
 
 export const Modal = styled.div`

@@ -1,11 +1,11 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { ImPhoneHangUp } from 'react-icons/im';
 import { BsGearFill, BsMicFill, BsMicMuteFill } from 'react-icons/bs';
 import { IoVideocam, IoVideocamOff } from 'react-icons/io5';
 import { MdOutlineScreenShare, MdOutlineStopScreenShare } from 'react-icons/md';
+import { PreferencesModal } from '../../../../components';
 import { useRoom } from '../RoomContext';
-import { PreferencesModal } from './components';
-import { useTranslation } from 'react-i18next';
 import * as UI from './RoomFooter.styles';
 
 const iconProps = {
@@ -13,6 +13,9 @@ const iconProps = {
 };
 
 export const RoomFooter = () => {
+  const { t } = useTranslation();
+  const [settingsOpen, setSettingsOpen] = useState(false);
+
   const {
     cameraActive,
     micActive,
@@ -22,9 +25,12 @@ export const RoomFooter = () => {
     startScreenShare,
     stopScreenShare,
     leaveRoom,
+    getAudioTracks,
+    getVideoTracks,
   } = useRoom();
-  const { t } = useTranslation();
-  const [settingsOpen, setSettingsOpen] = useState(false);
+
+  const audioTracks = useMemo(() => getAudioTracks() || [], [getAudioTracks]);
+  const videoTracks = useMemo(() => getVideoTracks() || [], [getVideoTracks]);
 
   return (
     <UI.RoomFooter>
@@ -61,7 +67,13 @@ export const RoomFooter = () => {
       <UI.ActionButton onClick={() => setSettingsOpen(true)} tooltipContent={t('openSettings')}>
         {BsGearFill({ ...iconProps })}
       </UI.ActionButton>
-      {settingsOpen && <PreferencesModal onClose={() => setSettingsOpen(false)} />}
+      {settingsOpen && (
+        <PreferencesModal
+          onClose={() => setSettingsOpen(false)}
+          audioTracks={audioTracks}
+          videoTracks={videoTracks}
+        />
+      )}
     </UI.RoomFooter>
   );
 };

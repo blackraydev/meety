@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { Select } from '../../../../../../UI';
+import { Select } from '../../UI';
 
 export const DeviceSelect = styled(Select)`
   button:hover {

@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import { Button } from '../../../../UI';
 
 type ActionButtonProps = {
@@ -16,13 +16,15 @@ export const RoomFooter = styled.div`
 export const ActionButton = styled(Button)<ActionButtonProps>`
   width: 48px;
   height: 48px;
-  background: ${({ theme, actionDisabled = false }) =>
-    actionDisabled ? theme.colors.error : theme.colors.primary};
 
-  &:hover {
-    background: ${({ theme, actionDisabled = false }) =>
-      actionDisabled ? theme.colors.errorHover : theme.colors.primaryHover};
-  }
+  ${({ theme, actionDisabled }) => css`
+    color: ${actionDisabled ? theme.colors.white : theme.colors.icon};
+    background: ${actionDisabled ? theme.colors.error : theme.colors.primary};
+
+    &:hover {
+      background: ${actionDisabled ? theme.colors.errorHover : theme.colors.primaryHover};
+    }
+  `}
 `;
 
 export const DeclineButton = styled(Button)`
@@ -30,6 +32,7 @@ export const DeclineButton = styled(Button)`
   height: 60px;
   border-radius: 20px;
   background: ${({ theme }) => theme.colors.error};
+  color: ${({ theme }) => theme.colors.white};
 
   &:hover {
     background: ${({ theme }) => theme.colors.errorHover};

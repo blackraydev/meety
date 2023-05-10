@@ -1,18 +1,15 @@
 import { useTranslation } from 'react-i18next';
-import { useRoom } from '../../../';
-import { Modal } from '../../../../../../UI';
+import { Modal } from '../../UI';
 import * as UI from './PreferencesModal.styles';
 
 type PreferencesModalProps = {
   onClose: () => void;
+  audioTracks: MediaStreamTrack[];
+  videoTracks: MediaStreamTrack[];
 };
 
-export const PreferencesModal = ({ onClose }: PreferencesModalProps) => {
+export const PreferencesModal = ({ onClose, audioTracks, videoTracks }: PreferencesModalProps) => {
   const { t } = useTranslation();
-  const { getAudioTracks, getVideoTracks } = useRoom();
-
-  const audioTracks = getAudioTracks() || [];
-  const videoTracks = getVideoTracks() || [];
 
   return (
     <Modal onClose={onClose} title={t('settings')}>

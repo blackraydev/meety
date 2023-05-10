@@ -1,10 +1,9 @@
 import { useEffect, useRef, useState, useCallback } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { useSocket } from '../components';
+import { LOCAL_VIDEO } from '../constants/localVideo';
 import { PagesRoutes, SocketEventTypes } from '../constants';
 import { useStateWithCallback } from './useStateWithCallback';
-
-export const LOCAL_VIDEO = 'LOCAL_VIDEO';
+import { useSocket } from '../components';
 
 const ICE_SERVERS = [
   {
@@ -20,18 +19,18 @@ export const useWebRTC = () => {
   const [micActive, setMicActive] = useState(false);
   const [cameraActive, setCameraActive] = useState(false);
   const [screenShareActive, setScreenShareActive] = useState(false);
+  const [senders, setSenders] = useState<RTCRtpSender[]>([]);
 
   const [clients, updateClients] = useStateWithCallback<string[]>([]);
 
-  const peerConnections = useRef<{ [key: string]: RTCPeerConnection }>({});
   const localMediaStream = useRef<MediaStream | null>(null);
-  const screenShareVideoRef = useRef<HTMLVideoElement>(null);
+  const peerConnections = useRef<{ [key: string]: RTCPeerConnection }>({});
   const peerMediaElements = useRef<{ [key: string]: HTMLVideoElement }>({
     [LOCAL_VIDEO]: null as unknown as HTMLVideoElement,
   });
 
   const provideMediaRef = useCallback((id: string, node: HTMLVideoElement) => {
-    peerMediaElements.current[id] = node;
+    return (peerMediaElements.current[id] = node);
   }, []);
 
   const addNewClient = useCallback(
@@ -40,7 +39,6 @@ export const useWebRTC = () => {
         if (!list.includes(newClient)) {
           return [...list, newClient];
         }
-
         return list;
       }, cb);
     },
@@ -115,24 +113,26 @@ export const useWebRTC = () => {
     };
 
     let tracksNumber = 0;
+
     peerConnections.current[peerId].ontrack = ({ streams: [remoteStream] }) => {
       tracksNumber++;
 
       if (tracksNumber === 2) {
         // video & audio tracks received
         tracksNumber = 0;
+
         addNewClient(peerId, () => {
           if (peerMediaElements.current[peerId]) {
             peerMediaElements.current[peerId].srcObject = remoteStream;
           } else {
             // FIX LONG RENDER IN CASE OF MANY CLIENTS
             let settled = false;
+
             const interval = setInterval(() => {
               if (peerMediaElements.current[peerId]) {
                 peerMediaElements.current[peerId].srcObject = remoteStream;
                 settled = true;
               }
-
               if (settled) {
                 clearInterval(interval);
               }
@@ -143,7 +143,11 @@ export const useWebRTC = () => {
     };
 
     localMediaStream.current?.getTracks().forEach((track) => {
-      peerConnections.current[peerId].addTrack(track, localMediaStream.current as MediaStream);
+      const peerSender = peerConnections.current[peerId].addTrack(
+        track,
+        localMediaStream.current as MediaStream,
+      );
+      setSenders((prev) => [...prev, peerSender]);
     });
 
     if (createOffer) {
@@ -266,26 +270,40 @@ export const useWebRTC = () => {
         },
       })
       .then((stream) => {
-        if (screenShareVideoRef.current) {
-          screenShareVideoRef.current.srcObject = stream;
-          setScreenShareActive(true);
+        const targetSenders = senders.filter(
+          (sender) => sender?.track?.kind === 'video' && sender.transport?.state === 'connected',
+        );
+
+        if (targetSenders.length) {
+          targetSenders.forEach((sender) => {
+            sender.replaceTrack(stream.getTracks()[0]);
+          });
         }
+
+        peerMediaElements.current[LOCAL_VIDEO].srcObject = stream;
+        setScreenShareActive(true);
       })
-      .catch((err) => {
-        console.error(err);
-        return null;
-      });
+      .catch(console.error);
   };
 
   const stopScreenShare = () => {
-    if (screenShareVideoRef.current && screenShareVideoRef.current.srcObject) {
-      const tracks = (screenShareVideoRef.current.srcObject as MediaStream).getTracks();
+    const targetSender = senders.find(
+      (sender) => sender?.track?.kind === 'video' && sender.transport?.state === 'connected',
+    );
+    const videoTracks = getVideoTracks();
 
-      tracks.forEach((track) => track.stop());
-      screenShareVideoRef.current.srcObject = null;
-
-      setScreenShareActive(false);
+    if (targetSender && videoTracks) {
+      targetSender.replaceTrack(videoTracks[0]);
     }
+
+    const displayTracks = (
+      peerMediaElements.current[LOCAL_VIDEO].srcObject as MediaStream
+    ).getTracks();
+
+    displayTracks.forEach((track) => track.stop());
+    peerMediaElements.current[LOCAL_VIDEO].srcObject = localMediaStream.current;
+
+    setScreenShareActive(false);
   };
 
   const leaveRoom = () => {
@@ -298,6 +316,18 @@ export const useWebRTC = () => {
 
       navigate(PagesRoutes.Home);
     }
+  };
+
+  const reloadLocalStream = () => {
+    peerMediaElements.current[LOCAL_VIDEO].srcObject = localMediaStream.current;
+  };
+
+  const isClientVideoEnabled = (id: string) => {
+    return (peerMediaElements.current[id]?.srcObject as MediaStream)?.getVideoTracks()[0].enabled;
+  };
+
+  const isClientAudioEnabled = (id: string) => {
+    return (peerMediaElements.current[id]?.srcObject as MediaStream)?.getAudioTracks()[0].enabled;
   };
 
   return {
@@ -313,6 +343,8 @@ export const useWebRTC = () => {
     startScreenShare,
     stopScreenShare,
     screenShareActive,
-    screenShareVideoRef,
+    reloadLocalStream,
+    isClientVideoEnabled,
+    isClientAudioEnabled,
   };
 };

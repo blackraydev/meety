@@ -51,7 +51,7 @@ export const SelectButton = styled.button`
 
 export const OptionsList = styled.ul`
   transition: 0.2s ease;
-  z-index: 1;
+  z-index: 1000;
   position: absolute;
   top: 100%;
   left: 0;
