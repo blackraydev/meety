@@ -62,7 +62,7 @@ export const useWebRTC = () => {
   }, [socket]);
 
   useEffect(() => {
-    if (socket) {
+    if (socket && roomId) {
       startCapture()
         .then(() => socket.emit(SocketEventTypes.Join, { room: roomId }))
         .catch((e) => console.error('Error getting userMedia:', e));
@@ -323,11 +323,11 @@ export const useWebRTC = () => {
   };
 
   const isClientVideoEnabled = (id: string) => {
-    return (peerMediaElements.current[id]?.srcObject as MediaStream)?.getVideoTracks()[0].enabled;
+    return (peerMediaElements.current[id]?.srcObject as MediaStream)?.getVideoTracks()[0]?.enabled;
   };
 
   const isClientAudioEnabled = (id: string) => {
-    return (peerMediaElements.current[id]?.srcObject as MediaStream)?.getAudioTracks()[0].enabled;
+    return (peerMediaElements.current[id]?.srcObject as MediaStream)?.getAudioTracks()[0]?.enabled;
   };
 
   return {

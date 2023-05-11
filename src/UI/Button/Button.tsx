@@ -1,7 +1,7 @@
 import { ButtonHTMLAttributes, ReactNode } from 'react';
 import { DefaultProps } from '../../types';
-import * as UI from './Button.styles';
 import { Tooltip } from '..';
+import * as UI from './Button.styles';
 
 type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> &
   DefaultProps & {
