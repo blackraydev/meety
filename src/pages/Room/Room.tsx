@@ -1,5 +1,4 @@
-import { RoomProvider } from './components';
-import { RoomRouter } from './components/RoomRouter';
+import { RoomProvider, RoomRouter } from './components';
 
 export const Room = () => {
   return (

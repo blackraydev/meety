@@ -14,8 +14,10 @@ export const RoomContent = () => {
     reloadLocalStream,
     isClientVideoEnabled,
     isClientAudioEnabled,
+    isClientScreenShareEnabled,
     getClientName,
-    senders,
+    cameraActive,
+    micActive,
   } = useRoom();
 
   const { t } = useTranslation();
@@ -27,7 +29,7 @@ export const RoomContent = () => {
 
   useEffect(() => {
     forceUpdate();
-  }, [clients, senders]);
+  }, [clients]);
 
   return (
     <UI.RoomContent>
@@ -39,10 +41,13 @@ export const RoomContent = () => {
             ref={(instance) => provideMediaRef(clientId, instance as HTMLVideoElement)}
             mirrored={!screenShareActive && currentUser}
             name={currentUser ? t('you') : getClientName(clientId)}
-            videoDisabled={!isClientVideoEnabled(clientId)}
-            audioDisabled={!isClientAudioEnabled(clientId)}
             muted={currentUser}
             loading={false}
+            videoDisabled={currentUser ? !cameraActive : !isClientVideoEnabled(clientId)}
+            audioDisabled={currentUser ? !micActive : !isClientAudioEnabled(clientId)}
+            screenShareDisabled={
+              currentUser ? !screenShareActive : !isClientScreenShareEnabled(clientId)
+            }
           />
         );
       })}

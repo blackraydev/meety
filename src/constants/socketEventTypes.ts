@@ -10,5 +10,6 @@ export enum SocketEventTypes {
   SessionDescription = 'session-description',
   AudioStatus = 'audio-status',
   VideoStatus = 'video-status',
+  ScreenShareStatus = 'screen-share-status',
   CheckExistingRoom = 'check-existing-room',
 }

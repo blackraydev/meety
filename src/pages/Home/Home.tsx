@@ -22,7 +22,7 @@ export const Home = () => {
         socket.off(SocketEventTypes.CheckExistingRoom);
       };
     }
-  }, [socket]);
+  }, [socket, roomId]);
 
   const handleCheckExistingRoom = ({ exist }: { exist: boolean }) => {
     if (!exist) {

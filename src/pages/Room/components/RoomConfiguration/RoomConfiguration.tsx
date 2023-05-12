@@ -13,11 +13,12 @@ export const RoomConfiguration = () => {
     provideMediaRef,
     toggleCamera,
     toggleMic,
-    isClientVideoEnabled,
-    isClientAudioEnabled,
     onJoinRoom,
     clientName,
     setClientName,
+    micActive,
+    cameraActive,
+    screenShareActive,
   } = useRoom();
 
   return (
@@ -25,8 +26,9 @@ export const RoomConfiguration = () => {
       <Video
         key={clientId}
         ref={(instance) => provideMediaRef(clientId, instance as HTMLVideoElement)}
-        videoDisabled={!isClientVideoEnabled(clientId)}
-        audioDisabled={!isClientAudioEnabled(clientId)}
+        videoDisabled={!cameraActive}
+        audioDisabled={!micActive}
+        screenShareDisabled={!screenShareActive}
         name={t('you')}
         loading={false}
         mirrored

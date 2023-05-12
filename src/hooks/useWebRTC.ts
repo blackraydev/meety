@@ -16,21 +16,27 @@ export const useWebRTC = () => {
   const { socket } = useSocket();
   const { id: roomId } = useParams();
 
+  // Current user data
   const [clientName, setClientName] = useState('');
   const [micActive, setMicActive] = useState(false);
   const [cameraActive, setCameraActive] = useState(false);
   const [screenShareActive, setScreenShareActive] = useState(false);
-  const [senders, setSenders] = useState<RTCRtpSender[]>([]);
   const [conferenceMode, setConferenceMode] = useState(false);
-  const [userNames, setUserNames] = useState<{ [key: string]: string }>({});
-
+  const [senders, setSenders] = useState<RTCRtpSender[]>([]);
   const localMediaStream = useRef<MediaStream | null>(null);
+
+  // Other users data
+  const [userNames, setUserNames] = useState<{ [key: string]: string }>({});
+  const [userMics, setUserMics] = useState<{ [key: string]: boolean }>({});
+  const [userCameras, setUserCameras] = useState<{ [key: string]: boolean }>({});
+  const [userScreenShares, setUserScreenShares] = useState<{ [key: string]: boolean }>({});
+
+  // All users data
+  const [clients, updateClients] = useStateWithCallback<string[]>([]);
   const peerConnections = useRef<{ [key: string]: RTCPeerConnection }>({});
   const peerMediaElements = useRef<{ [key: string]: HTMLVideoElement }>({
     [LOCAL_VIDEO]: null as unknown as HTMLVideoElement,
   });
-
-  const [clients, updateClients] = useStateWithCallback<string[]>([]);
 
   const onJoinRoom = useCallback(() => setConferenceMode(true), []);
 
@@ -58,6 +64,7 @@ export const useWebRTC = () => {
       socket.on(SocketEventTypes.RemovePeer, handleRemovePeer);
       socket.on(SocketEventTypes.VideoStatus, handleVideoStatus);
       socket.on(SocketEventTypes.AudioStatus, handleAudioStatus);
+      socket.on(SocketEventTypes.ScreenShareStatus, handleScreenShareStatus);
 
       return () => {
         socket.off(SocketEventTypes.AddPeer);
@@ -78,7 +85,7 @@ export const useWebRTC = () => {
 
   useEffect(() => {
     if (socket && roomId && conferenceMode && clientName) {
-      socket.emit(SocketEventTypes.Join, { roomId, clientName });
+      socket.emit(SocketEventTypes.Join, { roomId, clientName, cameraActive, micActive });
 
       return () => {
         localMediaStream.current?.getTracks().forEach((track) => track.stop());
@@ -104,19 +111,26 @@ export const useWebRTC = () => {
   const handleNewPeer = ({
     peerId,
     peerName,
+    peerCameraActive,
+    peerMicActive,
+    peerScreenShareActive,
     createOffer,
   }: {
     peerId: string;
     peerName: string;
+    peerCameraActive: boolean;
+    peerMicActive: boolean;
+    peerScreenShareActive: boolean;
     createOffer: (() => void) | null;
   }) => {
     if (peerId in peerConnections.current) {
       return console.warn(`Already connected to peer ${peerId}`);
     }
 
-    if (peerName) {
-      setUserNames((prev) => ({ ...prev, [peerId]: peerName }));
-    }
+    setUserNames((prev) => ({ ...prev, [peerId]: peerName }));
+    setUserCameras((prev) => ({ ...prev, [peerId]: peerCameraActive }));
+    setUserMics((prev) => ({ ...prev, [peerId]: peerMicActive }));
+    setUserScreenShares((prev) => ({ ...prev, [peerId]: peerScreenShareActive }));
 
     peerConnections.current[peerId] = new RTCPeerConnection({
       iceServers: ICE_SERVERS,
@@ -144,7 +158,7 @@ export const useWebRTC = () => {
           if (peerMediaElements.current[peerId]) {
             peerMediaElements.current[peerId].srcObject = remoteStream;
           } else {
-            // FIX LONG RENDER IN CASE OF MANY CLIENTS
+            // Fix long render in case of many clients
             let settled = false;
 
             const interval = setInterval(() => {
@@ -209,16 +223,24 @@ export const useWebRTC = () => {
   const handleRemovePeer = ({ peerId }: { peerId: string }) => {
     const peerConnection = peerConnections.current[peerId];
 
-    setUserNames((prev) => {
-      delete prev[peerId];
-      return prev;
-    });
-
     if (peerConnection) {
       peerConnection.ontrack = null;
       peerConnection.onicecandidate = null;
       peerConnection.close();
     }
+
+    setUserNames((prev) => {
+      delete prev[peerId];
+      return prev;
+    });
+    setUserCameras((prev) => {
+      delete prev[peerId];
+      return prev;
+    });
+    setUserMics((prev) => {
+      delete prev[peerId];
+      return prev;
+    });
 
     delete peerConnections.current[peerId];
     delete peerMediaElements.current[peerId];
@@ -240,11 +262,9 @@ export const useWebRTC = () => {
         localMediaStream.current.getTracks().forEach((track) => {
           if (track.kind === 'audio') {
             track.enabled = micActive;
-            emitAudioData(micActive);
           }
           if (track.kind === 'video') {
             track.enabled = cameraActive;
-            emitVideoData(cameraActive);
           }
         });
 
@@ -271,7 +291,7 @@ export const useWebRTC = () => {
   const toggleMic = () => {
     toggleMediaStream('audio', micActive);
     setMicActive((prev) => {
-      emitAudioData(!prev);
+      socket.emit(SocketEventTypes.AudioStatus, { roomId, enabled: !prev });
       return !prev;
     });
   };
@@ -279,7 +299,7 @@ export const useWebRTC = () => {
   const toggleCamera = () => {
     toggleMediaStream('video', cameraActive);
     setCameraActive((prev) => {
-      emitVideoData(!prev);
+      socket.emit(SocketEventTypes.VideoStatus, { roomId, enabled: !prev });
       return !prev;
     });
   };
@@ -313,6 +333,9 @@ export const useWebRTC = () => {
         }
 
         peerMediaElements.current[LOCAL_VIDEO].srcObject = stream;
+
+        socket.emit(SocketEventTypes.ScreenShareStatus, { roomId, enabled: true });
+
         setScreenShareActive(true);
       })
       .catch(console.error);
@@ -335,6 +358,8 @@ export const useWebRTC = () => {
     displayTracks.forEach((track) => track.stop());
     peerMediaElements.current[LOCAL_VIDEO].srcObject = localMediaStream.current;
 
+    socket.emit(SocketEventTypes.ScreenShareStatus, { roomId, enabled: false });
+
     setScreenShareActive(false);
   };
 
@@ -355,37 +380,31 @@ export const useWebRTC = () => {
   };
 
   const isClientVideoEnabled = (id: string) => {
-    return (peerMediaElements.current[id]?.srcObject as MediaStream)?.getVideoTracks()[0]?.enabled;
+    return userCameras[id];
   };
 
   const isClientAudioEnabled = (id: string) => {
-    return (peerMediaElements.current[id]?.srcObject as MediaStream)?.getAudioTracks()[0]?.enabled;
+    return userMics[id];
   };
 
-  const emitVideoData = (enabled: boolean) => {
-    socket.emit(SocketEventTypes.VideoStatus, { roomId, enabled });
-  };
-
-  const emitAudioData = (enabled: boolean) => {
-    socket.emit(SocketEventTypes.AudioStatus, { roomId, enabled });
-  };
-
-  const handleVideoStatus = ({ peerId, enabled }: { peerId: string; enabled: boolean }) => {
-    if (peerMediaElements.current[peerId]) {
-      const stream = peerMediaElements.current[peerId].srcObject as MediaStream;
-      stream.getVideoTracks().forEach((track) => (track.enabled = enabled));
-    }
-  };
-
-  const handleAudioStatus = ({ peerId, enabled }: { peerId: string; enabled: boolean }) => {
-    if (peerMediaElements.current[peerId]) {
-      const stream = peerMediaElements.current[peerId].srcObject as MediaStream;
-      stream.getAudioTracks().forEach((track) => (track.enabled = enabled));
-    }
+  const isClientScreenShareEnabled = (id: string) => {
+    return userScreenShares[id];
   };
 
   const getClientName = (clientId: string) => {
     return userNames[clientId];
+  };
+
+  const handleVideoStatus = ({ peerId, enabled }: { peerId: string; enabled: boolean }) => {
+    setUserCameras((prev) => ({ ...prev, [peerId]: enabled }));
+  };
+
+  const handleAudioStatus = ({ peerId, enabled }: { peerId: string; enabled: boolean }) => {
+    setUserMics((prev) => ({ ...prev, [peerId]: enabled }));
+  };
+
+  const handleScreenShareStatus = ({ peerId, enabled }: { peerId: string; enabled: boolean }) => {
+    setUserScreenShares((prev) => ({ ...prev, [peerId]: enabled }));
   };
 
   return {
@@ -404,6 +423,7 @@ export const useWebRTC = () => {
     reloadLocalStream,
     isClientVideoEnabled,
     isClientAudioEnabled,
+    isClientScreenShareEnabled,
     senders,
     conferenceMode,
     onJoinRoom,
