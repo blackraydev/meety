@@ -22,6 +22,7 @@
         "toggleCamera": "{{toggle}} camera",
         "leaveRoom": "Leave room",
         "openSettings": "Open settings",
-        "switchTheme": "Switch theme"
+        "switchTheme": "Switch theme",
+        "roomNotFound": "Room not found"
     }
 }

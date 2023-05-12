@@ -45,6 +45,7 @@ export const Content = styled.div`
 
 export const LanguageSelect = styled(Select)`
   margin-right: 25px;
+  z-index: 1;
 
   button,
   ul {

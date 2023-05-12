@@ -5,19 +5,19 @@ import { LOCAL_VIDEO } from '../../../../constants/localVideo';
 import { useRoom } from '../';
 import * as UI from './RoomConfiguration.styles';
 
-type RoomConfigurationProps = {
-  onJoinRoom: () => void;
-};
+export const RoomConfiguration = () => {
+  const { t } = useTranslation();
 
-export const RoomConfiguration = ({ onJoinRoom }: RoomConfigurationProps) => {
   const {
     provideMediaRef,
     toggleCamera,
     toggleMic,
-    // isClientVideoEnabled,
-    // isClientAudioEnabled
+    isClientVideoEnabled,
+    isClientAudioEnabled,
+    onJoinRoom,
+    name,
+    setName
   } = useRoom();
-  const { t } = useTranslation();
 
   const clientId = LOCAL_VIDEO;
 
@@ -26,16 +26,18 @@ export const RoomConfiguration = ({ onJoinRoom }: RoomConfigurationProps) => {
       <Video
         key={clientId}
         ref={(instance) => provideMediaRef(clientId, instance as HTMLVideoElement)}
-        // videoDisabled={!isClientVideoEnabled(clientId)}
-        // audioDisabled={!isClientAudioEnabled(clientId)}
-        videoDisabled={false}
-        audioDisabled={false}
+        videoDisabled={!isClientVideoEnabled(clientId)}
+        audioDisabled={!isClientAudioEnabled(clientId)}
         loading={false}
         mirrored
         muted
       />
       <UI.RoomConfiguration>
-        <UI.NameInput placeholder={t('yourName')} />
+        <UI.NameInput
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          placeholder={t('yourName')}
+        />
         <ToggleSwitch
           onChange={toggleCamera}
           label={{
@@ -50,7 +52,9 @@ export const RoomConfiguration = ({ onJoinRoom }: RoomConfigurationProps) => {
             unchecked: t('microphone', { status: t('disabled') }),
           }}
         />
-        <Button onClick={onJoinRoom}>{t('join')}</Button>
+        <Button onClick={onJoinRoom} disabled={!name}>
+          {t('join')}
+        </Button>
       </UI.RoomConfiguration>
     </UI.RoomConfigurationWrapper>
   );

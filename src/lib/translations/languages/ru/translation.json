@@ -22,6 +22,7 @@
         "toggleCamera": "{{toggle}} камеру",
         "leaveRoom": "Покинуть комнату",
         "openSettings": "Открыть настройки",
-        "switchTheme": "Сменить тему"
+        "switchTheme": "Сменить тему",
+        "roomNotFound": "Комната не найдена"
     }
 }

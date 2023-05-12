@@ -15,4 +15,10 @@ export const Button = styled.button`
   &:hover {
     background: ${({ theme }) => theme.colors.primaryHover};
   }
+
+  &:disabled {
+    cursor: default;
+    background: ${({ theme }) => theme.colors.primaryDisabled};
+    color: ${({ theme }) => theme.colors.gray};
+  }
 `;

@@ -1,7 +1,8 @@
 import { useEffect } from 'react';
+import { useRoom } from '../RoomContext';
 import { Video } from '../../../../components';
 import { LOCAL_VIDEO } from '../../../../constants/localVideo';
-import { useRoom } from '../RoomContext';
+import { useForceUpdate } from '../../../../hooks/useForceUpdate';
 import * as UI from './RoomContent.styles';
 
 export const RoomContent = () => {
@@ -10,13 +11,20 @@ export const RoomContent = () => {
     provideMediaRef,
     screenShareActive,
     reloadLocalStream,
-    // isClientVideoEnabled,
-    // isClientAudioEnabled,
+    isClientVideoEnabled,
+    isClientAudioEnabled,
+    senders,
   } = useRoom();
+
+  const forceUpdate = useForceUpdate();
 
   useEffect(() => {
     reloadLocalStream();
   }, []);
+
+  useEffect(() => {
+    forceUpdate();
+  }, [clients, senders]);
 
   return (
     <UI.RoomContent>
@@ -26,12 +34,10 @@ export const RoomContent = () => {
             key={clientId}
             ref={(instance) => provideMediaRef(clientId, instance as HTMLVideoElement)}
             mirrored={!screenShareActive && clientId === LOCAL_VIDEO}
-            // videoDisabled={!isClientVideoEnabled(clientId)}
-            // audioDisabled={!isClientAudioEnabled(clientId)}
+            videoDisabled={!isClientVideoEnabled(clientId)}
+            audioDisabled={!isClientAudioEnabled(clientId)}
             muted={clientId === LOCAL_VIDEO}
             loading={false}
-            videoDisabled={false}
-            audioDisabled={false}
           />
         );
       })}

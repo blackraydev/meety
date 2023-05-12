@@ -16,18 +16,22 @@ export const useWebRTC = () => {
   const { socket } = useSocket();
   const { id: roomId } = useParams();
 
+  const [name, setName] = useState('');
   const [micActive, setMicActive] = useState(false);
   const [cameraActive, setCameraActive] = useState(false);
   const [screenShareActive, setScreenShareActive] = useState(false);
   const [senders, setSenders] = useState<RTCRtpSender[]>([]);
-
-  const [clients, updateClients] = useStateWithCallback<string[]>([]);
+  const [conferenceMode, setConferenceMode] = useState(false);
 
   const localMediaStream = useRef<MediaStream | null>(null);
   const peerConnections = useRef<{ [key: string]: RTCPeerConnection }>({});
   const peerMediaElements = useRef<{ [key: string]: HTMLVideoElement }>({
     [LOCAL_VIDEO]: null as unknown as HTMLVideoElement,
   });
+
+  const [clients, updateClients] = useStateWithCallback<string[]>([]);
+
+  const onJoinRoom = useCallback(() => setConferenceMode(true), []);
 
   const provideMediaRef = useCallback((id: string, node: HTMLVideoElement) => {
     return (peerMediaElements.current[id] = node);
@@ -51,28 +55,36 @@ export const useWebRTC = () => {
       socket.on(SocketEventTypes.SessionDescription, setRemoteMedia);
       socket.on(SocketEventTypes.IceCandidate, handleAddPeer);
       socket.on(SocketEventTypes.RemovePeer, handleRemovePeer);
+      socket.on(SocketEventTypes.VideoStatus, handleVideoStatus);
+      socket.on(SocketEventTypes.AudioStatus, handleAudioStatus);
 
       return () => {
         socket.off(SocketEventTypes.AddPeer);
         socket.off(SocketEventTypes.SessionDescription);
         socket.off(SocketEventTypes.IceCandidate);
         socket.off(SocketEventTypes.RemovePeer);
+        socket.off(SocketEventTypes.VideoStatus);
+        socket.off(SocketEventTypes.AudioStatus);
       };
     }
   }, [socket]);
 
   useEffect(() => {
     if (socket && roomId) {
-      startCapture()
-        .then(() => socket.emit(SocketEventTypes.Join, { room: roomId }))
-        .catch((e) => console.error('Error getting userMedia:', e));
+      startCapture().catch(console.error);
+    }
+  }, [socket, roomId]);
+
+  useEffect(() => {
+    if (socket && roomId && conferenceMode) {
+      socket.emit(SocketEventTypes.Join, { room: roomId });
 
       return () => {
         localMediaStream.current?.getTracks().forEach((track) => track.stop());
         socket.emit(SocketEventTypes.Leave);
       };
     }
-  }, [socket, roomId]);
+  }, [socket, roomId, conferenceMode]);
 
   const handleRelaySDP = (peerId: string, description: RTCSessionDescriptionInit) => {
     if (peerConnections.current[peerId]) {
@@ -216,9 +228,11 @@ export const useWebRTC = () => {
         localMediaStream.current.getTracks().forEach((track) => {
           if (track.kind === 'audio') {
             track.enabled = micActive;
+            emitAudioData(micActive);
           }
           if (track.kind === 'video') {
             track.enabled = cameraActive;
+            emitVideoData(cameraActive);
           }
         });
 
@@ -244,12 +258,18 @@ export const useWebRTC = () => {
 
   const toggleMic = () => {
     toggleMediaStream('audio', micActive);
-    setMicActive((prev) => !prev);
+    setMicActive((prev) => {
+      emitAudioData(!prev);
+      return !prev;
+    });
   };
 
   const toggleCamera = () => {
     toggleMediaStream('video', cameraActive);
-    setCameraActive((prev) => !prev);
+    setCameraActive((prev) => {
+      emitVideoData(!prev);
+      return !prev;
+    });
   };
 
   const getAudioTracks = () => {
@@ -330,6 +350,28 @@ export const useWebRTC = () => {
     return (peerMediaElements.current[id]?.srcObject as MediaStream)?.getAudioTracks()[0]?.enabled;
   };
 
+  const emitVideoData = (enabled: boolean) => {
+    socket.emit(SocketEventTypes.VideoStatus, { roomId, enabled });
+  };
+
+  const emitAudioData = (enabled: boolean) => {
+    socket.emit(SocketEventTypes.AudioStatus, { roomId, enabled });
+  };
+
+  const handleVideoStatus = ({ peerId, enabled }: { peerId: string; enabled: boolean }) => {
+    if (peerMediaElements.current[peerId]) {
+      const stream = peerMediaElements.current[peerId].srcObject as MediaStream;
+      stream.getVideoTracks().forEach((track) => (track.enabled = enabled));
+    }
+  };
+
+  const handleAudioStatus = ({ peerId, enabled }: { peerId: string; enabled: boolean }) => {
+    if (peerMediaElements.current[peerId]) {
+      const stream = peerMediaElements.current[peerId].srcObject as MediaStream;
+      stream.getAudioTracks().forEach((track) => (track.enabled = enabled));
+    }
+  };
+
   return {
     clients,
     provideMediaRef,
@@ -346,5 +388,10 @@ export const useWebRTC = () => {
     reloadLocalStream,
     isClientVideoEnabled,
     isClientAudioEnabled,
+    senders,
+    conferenceMode,
+    onJoinRoom,
+    name,
+    setName
   };
 };

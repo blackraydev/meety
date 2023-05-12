@@ -8,4 +8,7 @@ export enum SocketEventTypes {
   RelayIce = 'relay-ice',
   IceCandidate = 'ice-candidate',
   SessionDescription = 'session-description',
+  AudioStatus = 'audio-status',
+  VideoStatus = 'video-status',
+  CheckExistingRoom = 'check-existing-room',
 }

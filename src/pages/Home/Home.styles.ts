@@ -30,10 +30,4 @@ export const JoinInput = styled(Input)`
 export const JoinButton = styled(Button)`
   height: 48px;
   width: 100%;
-
-  &:disabled {
-    cursor: default;
-    background: ${({ theme }) => theme.colors.primaryDisabled};
-    color: ${({ theme }) => theme.colors.gray};
-  }
 `;

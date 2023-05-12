@@ -8,6 +8,7 @@ export const ThemeToggler = styled.div<ThemeTogglerStyleProps>`
   cursor: pointer;
   display: flex;
   align-items: center;
+  z-index: 1;
 
   ${({ isDarkTheme }) => css`
     ${SunAndMoon} {
