@@ -16,12 +16,13 @@ export const useWebRTC = () => {
   const { socket } = useSocket();
   const { id: roomId } = useParams();
 
-  const [name, setName] = useState('');
+  const [clientName, setClientName] = useState('');
   const [micActive, setMicActive] = useState(false);
   const [cameraActive, setCameraActive] = useState(false);
   const [screenShareActive, setScreenShareActive] = useState(false);
   const [senders, setSenders] = useState<RTCRtpSender[]>([]);
   const [conferenceMode, setConferenceMode] = useState(false);
+  const [userNames, setUserNames] = useState<{ [key: string]: string }>({});
 
   const localMediaStream = useRef<MediaStream | null>(null);
   const peerConnections = useRef<{ [key: string]: RTCPeerConnection }>({});
@@ -76,15 +77,15 @@ export const useWebRTC = () => {
   }, [socket, roomId]);
 
   useEffect(() => {
-    if (socket && roomId && conferenceMode) {
-      socket.emit(SocketEventTypes.Join, { room: roomId });
+    if (socket && roomId && conferenceMode && clientName) {
+      socket.emit(SocketEventTypes.Join, { roomId, clientName });
 
       return () => {
         localMediaStream.current?.getTracks().forEach((track) => track.stop());
         socket.emit(SocketEventTypes.Leave);
       };
     }
-  }, [socket, roomId, conferenceMode]);
+  }, [socket, roomId, conferenceMode, clientName]);
 
   const handleRelaySDP = (peerId: string, description: RTCSessionDescriptionInit) => {
     if (peerConnections.current[peerId]) {
@@ -102,13 +103,19 @@ export const useWebRTC = () => {
 
   const handleNewPeer = ({
     peerId,
+    peerName,
     createOffer,
   }: {
     peerId: string;
+    peerName: string;
     createOffer: (() => void) | null;
   }) => {
     if (peerId in peerConnections.current) {
       return console.warn(`Already connected to peer ${peerId}`);
+    }
+
+    if (peerName) {
+      setUserNames((prev) => ({ ...prev, [peerId]: peerName }));
     }
 
     peerConnections.current[peerId] = new RTCPeerConnection({
@@ -201,6 +208,11 @@ export const useWebRTC = () => {
 
   const handleRemovePeer = ({ peerId }: { peerId: string }) => {
     const peerConnection = peerConnections.current[peerId];
+
+    setUserNames((prev) => {
+      delete prev[peerId];
+      return prev;
+    });
 
     if (peerConnection) {
       peerConnection.ontrack = null;
@@ -372,6 +384,10 @@ export const useWebRTC = () => {
     }
   };
 
+  const getClientName = (clientId: string) => {
+    return userNames[clientId];
+  };
+
   return {
     clients,
     provideMediaRef,
@@ -391,7 +407,8 @@ export const useWebRTC = () => {
     senders,
     conferenceMode,
     onJoinRoom,
-    name,
-    setName
+    clientName,
+    setClientName,
+    getClientName,
   };
 };

@@ -4,6 +4,7 @@ import { Video } from '../../../../components';
 import { LOCAL_VIDEO } from '../../../../constants/localVideo';
 import { useForceUpdate } from '../../../../hooks/useForceUpdate';
 import * as UI from './RoomContent.styles';
+import { useTranslation } from 'react-i18next';
 
 export const RoomContent = () => {
   const {
@@ -13,9 +14,11 @@ export const RoomContent = () => {
     reloadLocalStream,
     isClientVideoEnabled,
     isClientAudioEnabled,
+    getClientName,
     senders,
   } = useRoom();
 
+  const { t } = useTranslation();
   const forceUpdate = useForceUpdate();
 
   useEffect(() => {
@@ -29,14 +32,16 @@ export const RoomContent = () => {
   return (
     <UI.RoomContent>
       {clients.map((clientId) => {
+        const currentUser = clientId === LOCAL_VIDEO;
         return (
           <Video
             key={clientId}
             ref={(instance) => provideMediaRef(clientId, instance as HTMLVideoElement)}
-            mirrored={!screenShareActive && clientId === LOCAL_VIDEO}
+            mirrored={!screenShareActive && currentUser}
+            name={currentUser ? t('you') : getClientName(clientId)}
             videoDisabled={!isClientVideoEnabled(clientId)}
             audioDisabled={!isClientAudioEnabled(clientId)}
-            muted={clientId === LOCAL_VIDEO}
+            muted={currentUser}
             loading={false}
           />
         );

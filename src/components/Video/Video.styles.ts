@@ -47,3 +47,12 @@ export const MicMutedIcon = styled(BsMicMuteFill)`
   z-index: 3;
   color: ${({ theme }) => theme.colors.icon};
 `;
+
+export const NameLabel = styled.span`
+  position: absolute;
+  left: 20px;
+  bottom: 20px;
+  font-size: 16px;
+  color: ${({ theme }) => theme.colors.white};
+  z-index: 3;
+`;

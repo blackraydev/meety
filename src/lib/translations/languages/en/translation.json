@@ -23,6 +23,7 @@
         "leaveRoom": "Leave room",
         "openSettings": "Open settings",
         "switchTheme": "Switch theme",
-        "roomNotFound": "Room not found"
+        "roomNotFound": "Room not found",
+        "you": "You"
     }
 }

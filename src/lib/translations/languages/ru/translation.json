@@ -23,6 +23,7 @@
         "leaveRoom": "Покинуть комнату",
         "openSettings": "Открыть настройки",
         "switchTheme": "Сменить тему",
-        "roomNotFound": "Комната не найдена"
+        "roomNotFound": "Комната не найдена",
+        "you": "Вы"
     }
 }

@@ -7,6 +7,7 @@ import * as UI from './RoomConfiguration.styles';
 
 export const RoomConfiguration = () => {
   const { t } = useTranslation();
+  const clientId = LOCAL_VIDEO;
 
   const {
     provideMediaRef,
@@ -15,11 +16,9 @@ export const RoomConfiguration = () => {
     isClientVideoEnabled,
     isClientAudioEnabled,
     onJoinRoom,
-    name,
-    setName
+    clientName,
+    setClientName,
   } = useRoom();
-
-  const clientId = LOCAL_VIDEO;
 
   return (
     <UI.RoomConfigurationWrapper>
@@ -28,14 +27,15 @@ export const RoomConfiguration = () => {
         ref={(instance) => provideMediaRef(clientId, instance as HTMLVideoElement)}
         videoDisabled={!isClientVideoEnabled(clientId)}
         audioDisabled={!isClientAudioEnabled(clientId)}
+        name={t('you')}
         loading={false}
         mirrored
         muted
       />
       <UI.RoomConfiguration>
         <UI.NameInput
-          value={name}
-          onChange={(e) => setName(e.target.value)}
+          value={clientName}
+          onChange={(e) => setClientName(e.target.value)}
           placeholder={t('yourName')}
         />
         <ToggleSwitch
@@ -52,7 +52,7 @@ export const RoomConfiguration = () => {
             unchecked: t('microphone', { status: t('disabled') }),
           }}
         />
-        <Button onClick={onJoinRoom} disabled={!name}>
+        <Button onClick={onJoinRoom} disabled={!clientName}>
           {t('join')}
         </Button>
       </UI.RoomConfiguration>
