@@ -5,3 +5,4 @@ export * from './Select';
 export * from './Modal';
 export * from './Tooltip';
 export * from './ToggleSwitch';
+export * from './Drawer';

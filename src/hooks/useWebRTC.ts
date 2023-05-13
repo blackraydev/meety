@@ -23,6 +23,7 @@ export const useWebRTC = () => {
   const [cameraActive, setCameraActive] = useState(false);
   const [screenShareActive, setScreenShareActive] = useState(false);
   const [chatActive, setChatActive] = useState(false);
+  const [participantsActive, setParticipantsActive] = useState(false);
   const [message, setMessage] = useState('');
   const [conferenceMode, setConferenceMode] = useState(false);
   const [senders, setSenders] = useState<RTCRtpSender[]>([]);
@@ -319,6 +320,10 @@ export const useWebRTC = () => {
     setChatActive((prev) => !prev);
   };
 
+  const toggleParticipants = () => {
+    setParticipantsActive((prev) => !prev);
+  };
+
   const getAudioTracks = () => {
     return localMediaStream.current?.getAudioTracks();
   };
@@ -463,12 +468,14 @@ export const useWebRTC = () => {
     cameraActive,
     screenShareActive,
     chatActive,
+    participantsActive,
     getAudioTracks,
     getVideoTracks,
     toggleMic,
     toggleCamera,
     toggleScreenShare,
     toggleChat,
+    toggleParticipants,
     leaveRoom,
     reloadLocalStream,
     isClientVideoEnabled,

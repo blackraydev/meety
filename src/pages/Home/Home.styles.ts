@@ -13,6 +13,7 @@ export const Home = styled.div`
 `;
 
 export const Text = styled.p`
+  transition: 0.3s ease;
   font-size: 20px;
   color: ${({ theme }) => theme.colors.primaryText};
 `;

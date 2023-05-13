@@ -1,41 +1,28 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { v4 } from 'uuid';
-import { PagesRoutes, SocketEventTypes } from '../../constants';
-import { useSocket } from '../../components';
+import { PagesRoutes } from '../../constants';
 import { useToast } from '../../UI/Toast';
+import { checkRoomExistence } from './Home.api';
 import * as UI from './Home.styles';
 
 export const Home = () => {
   const { addToast } = useToast();
-  const { socket } = useSocket();
   const { t } = useTranslation();
   const navigate = useNavigate();
   const [roomId, setRoomId] = useState('');
 
-  useEffect(() => {
-    if (socket) {
-      socket.on(SocketEventTypes.CheckExistingRoom, handleCheckExistingRoom);
-
-      return () => {
-        socket.off(SocketEventTypes.CheckExistingRoom);
-      };
-    }
-  }, [socket, roomId]);
-
-  const handleCheckExistingRoom = ({ exist }: { exist: boolean }) => {
-    if (!exist) {
-      return addToast({
-        content: t('roomNotFound'),
-      });
-    }
-
-    navigate(`${PagesRoutes.Room}/${roomId}`);
-  };
-
   const handleJoinRoomClick = () => {
-    socket.emit(SocketEventTypes.CheckExistingRoom, { roomId });
+    checkRoomExistence(roomId)
+      .then(() => {
+        navigate(`${PagesRoutes.Room}/${roomId}`);
+      })
+      .catch(() =>
+        addToast({
+          content: t('roomNotFound'),
+        }),
+      );
   };
 
   const handleCreateRoomClick = () => {

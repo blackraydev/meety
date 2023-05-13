@@ -7,10 +7,17 @@ type ActionButtonProps = {
 
 export const RoomFooter = styled.div`
   display: flex;
-  justify-content: center;
+  justify-content: space-between;
   align-items: center;
+  padding: 20px;
+`;
+
+export const ActionsWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  height: 100%;
+  min-width: 116px;
   gap: 20px;
-  padding: 24px 0;
 `;
 
 export const ActionButton = styled(Button)<ActionButtonProps>`

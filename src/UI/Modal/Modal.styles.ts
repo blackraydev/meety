@@ -1,19 +1,6 @@
 import styled from 'styled-components';
 import { IoClose } from 'react-icons/io5';
 
-export const ModalWrapper = styled.div`
-  position: absolute;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgb(0, 0, 0, 0.2);
-  z-index: 1000;
-`;
-
 export const Modal = styled.div`
   position: relative;
   display: flex;
@@ -47,5 +34,32 @@ export const CloseIcon = styled(IoClose)`
 
   &:hover {
     color: ${({ theme }) => theme.colors.icon};
+  }
+`;
+
+export const ModalWrapper = styled.div`
+  position: absolute;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgb(0, 0, 0, 0.2);
+  z-index: 1000;
+  animation: modal-enter 0.3s ease;
+
+  ${Modal} {
+    animation: modal-enter 0.3s ease;
+  }
+
+  @keyframes modal-enter {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
   }
 `;

@@ -27,11 +27,12 @@ export const Layout = styled.div`
 
 export const Header = styled.header`
   position: absolute;
-  top: 0;
   display: flex;
+  justify-content: space-between;
+  align-items: center;
+  top: 0;
   width: 100%;
   padding: 20px 50px;
-  justify-content: flex-end;
 `;
 
 export const Content = styled.div`
@@ -43,8 +44,14 @@ export const Content = styled.div`
   min-height: 100vh;
 `;
 
+export const ActionsWrapper = styled.div`
+  display: flex;
+  jusfity-content: flex-end;
+  align-items: center;
+  gap: 25px;
+`;
+
 export const LanguageSelect = styled(Select)`
-  margin-right: 25px;
   z-index: 1;
 
   button,

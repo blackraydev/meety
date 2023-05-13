@@ -17,6 +17,10 @@
         "stop": "Остановить",
         "turnOn": "Включить",
         "turnOff": "Выключить",
+        "show": "Показать",
+        "hide": "Скрыть",
+        "toggleChat": "{{toggle}} чат",
+        "toggleParticipants": "{{toggle}} участников",
         "toggleScreenShare": "{{toggle}} показ экрана",
         "toggleMicrophone": "{{toggle}} микрофон",
         "toggleCamera": "{{toggle}} камеру",
@@ -24,6 +28,10 @@
         "openSettings": "Открыть настройки",
         "switchTheme": "Сменить тему",
         "roomNotFound": "Комната не найдена",
-        "you": "Вы"
+        "you": "Вы",
+        "message": "Сообщение",
+        "chat": "Чат",
+        "participants": "Участники",
+        "noMessagesYet": "Пока нет сообщений"
     }
 }

@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { useRoom } from '../RoomContext';
 import { Video } from '../../../../components';
 import { LOCAL_VIDEO } from '../../../../constants/localVideo';
-import { RoomChat } from '..';
+import { RoomChat, RoomParticipants } from '../';
 import * as UI from './RoomContent.styles';
 
 export const RoomContent = () => {
@@ -19,6 +19,7 @@ export const RoomContent = () => {
     cameraActive,
     micActive,
     chatActive,
+    participantsActive,
   } = useRoom();
 
   const { t } = useTranslation();
@@ -28,7 +29,7 @@ export const RoomContent = () => {
   }, []);
 
   return (
-    <UI.RoomContent panelActive={chatActive}>
+    <UI.RoomContent panelActive={chatActive || participantsActive}>
       <UI.VideosWrapper>
         {clients.map((clientId) => {
           const currentUser = clientId === LOCAL_VIDEO;
@@ -49,7 +50,8 @@ export const RoomContent = () => {
           );
         })}
       </UI.VideosWrapper>
-      <RoomChat active={chatActive} />
+      <RoomChat />
+      <RoomParticipants />
     </UI.RoomContent>
   );
 };

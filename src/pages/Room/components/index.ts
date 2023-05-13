@@ -4,3 +4,4 @@ export * from './RoomFooter';
 export * from './RoomConfiguration';
 export * from './RoomRouter';
 export * from './RoomChat';
+export * from './RoomParticipants';

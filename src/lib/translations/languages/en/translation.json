@@ -17,6 +17,10 @@
         "stop": "Stop",
         "turnOn": "Turn on",
         "turnOff": "Turn off",
+        "show": "Show",
+        "hide": "Hide",
+        "toggleChat": "{{toggle}} chat",
+        "toggleParticipants": "{{toggle}} participants",
         "toggleScreenShare": "{{toggle}} screen sharing",
         "toggleMicrophone": "{{toggle}} microphone",
         "toggleCamera": "{{toggle}} camera",
@@ -24,6 +28,10 @@
         "openSettings": "Open settings",
         "switchTheme": "Switch theme",
         "roomNotFound": "Room not found",
-        "you": "You"
+        "you": "You",
+        "message": "Message",
+        "chat": "Chat",
+        "participants": "Participants",
+        "noMessagesYet": "No messages yet"
     }
 }

@@ -53,6 +53,6 @@ export const NameLabel = styled.span`
   left: 20px;
   bottom: 20px;
   font-size: 16px;
-  color: ${({ theme }) => theme.colors.white};
+  color: ${({ theme }) => theme.colors.primaryText};
   z-index: 3;
 `;

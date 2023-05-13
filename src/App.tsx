@@ -7,20 +7,20 @@ import { ToastContextProvider } from './UI/Toast/ToastContext';
 
 const App = () => {
   return (
-    <AppThemeProvider>
-      <SocketProvider>
-        <AppLayout>
-          <ToastContextProvider>
-            <BrowserRouter>
+    <BrowserRouter>
+      <AppThemeProvider>
+        <SocketProvider>
+          <AppLayout>
+            <ToastContextProvider>
               <Routes>
                 <Route path={PagesRoutes.Home} element={<Home />} />
                 <Route path={`${PagesRoutes.Room}/:id`} element={<Room />} />
               </Routes>
-            </BrowserRouter>
-          </ToastContextProvider>
-        </AppLayout>
-      </SocketProvider>
-    </AppThemeProvider>
+            </ToastContextProvider>
+          </AppLayout>
+        </SocketProvider>
+      </AppThemeProvider>
+    </BrowserRouter>
   );
 };
 

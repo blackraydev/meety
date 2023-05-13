@@ -12,7 +12,7 @@ type TooltipProps = DefaultProps & {
 };
 
 export const Tooltip = ({
-  delay = 500,
+  delay = 300,
   position = 'top',
   className,
   content,
