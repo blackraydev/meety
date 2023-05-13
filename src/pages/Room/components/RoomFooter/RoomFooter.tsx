@@ -19,11 +19,11 @@ export const RoomFooter = () => {
   const {
     cameraActive,
     micActive,
+    screenShareActive,
     toggleCamera,
     toggleMic,
-    screenShareActive,
-    startScreenShare,
-    stopScreenShare,
+    toggleScreenShare,
+    toggleChat,
     leaveRoom,
     getAudioTracks,
     getVideoTracks,
@@ -35,7 +35,7 @@ export const RoomFooter = () => {
   return (
     <UI.RoomFooter>
       <UI.ActionButton
-        onClick={screenShareActive ? stopScreenShare : startScreenShare}
+        onClick={toggleScreenShare}
         actionDisabled={!screenShareActive}
         tooltipContent={t('toggleScreenShare', {
           toggle: screenShareActive ? t('stop') : t('start'),
@@ -67,6 +67,11 @@ export const RoomFooter = () => {
       <UI.ActionButton onClick={() => setSettingsOpen(true)} tooltipContent={t('openSettings')}>
         {BsGearFill({ ...iconProps })}
       </UI.ActionButton>
+
+      <UI.ActionButton onClick={toggleChat} tooltipContent={t('openSettings')}>
+        {BsGearFill({ ...iconProps })}
+      </UI.ActionButton>
+
       {settingsOpen && (
         <PreferencesModal
           onClose={() => setSettingsOpen(false)}

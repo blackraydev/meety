@@ -4,6 +4,7 @@ import { LOCAL_VIDEO } from '../constants/localVideo';
 import { PagesRoutes, SocketEventTypes } from '../constants';
 import { useStateWithCallback } from './useStateWithCallback';
 import { useSocket } from '../components';
+import { toDateHHMMSS } from '../lib';
 
 const ICE_SERVERS = [
   {
@@ -21,6 +22,8 @@ export const useWebRTC = () => {
   const [micActive, setMicActive] = useState(false);
   const [cameraActive, setCameraActive] = useState(false);
   const [screenShareActive, setScreenShareActive] = useState(false);
+  const [chatActive, setChatActive] = useState(false);
+  const [message, setMessage] = useState('');
   const [conferenceMode, setConferenceMode] = useState(false);
   const [senders, setSenders] = useState<RTCRtpSender[]>([]);
   const localMediaStream = useRef<MediaStream | null>(null);
@@ -32,6 +35,9 @@ export const useWebRTC = () => {
   const [userScreenShares, setUserScreenShares] = useState<{ [key: string]: boolean }>({});
 
   // All users data
+  const [clientMessages, setClientMessages] = useState<{
+    [key: string]: Array<{ messageText: string; messageDate: Date }>;
+  }>({});
   const [clients, updateClients] = useStateWithCallback<string[]>([]);
   const peerConnections = useRef<{ [key: string]: RTCPeerConnection }>({});
   const peerMediaElements = useRef<{ [key: string]: HTMLVideoElement }>({
@@ -65,6 +71,7 @@ export const useWebRTC = () => {
       socket.on(SocketEventTypes.VideoStatus, handleVideoStatus);
       socket.on(SocketEventTypes.AudioStatus, handleAudioStatus);
       socket.on(SocketEventTypes.ScreenShareStatus, handleScreenShareStatus);
+      socket.on(SocketEventTypes.SendMessage, handleSendMessage);
 
       return () => {
         socket.off(SocketEventTypes.AddPeer);
@@ -304,6 +311,14 @@ export const useWebRTC = () => {
     });
   };
 
+  const toggleScreenShare = () => {
+    screenShareActive ? stopScreenShare() : startScreenShare();
+  };
+
+  const toggleChat = () => {
+    setChatActive((prev) => !prev);
+  };
+
   const getAudioTracks = () => {
     return localMediaStream.current?.getAudioTracks();
   };
@@ -376,7 +391,9 @@ export const useWebRTC = () => {
   };
 
   const reloadLocalStream = () => {
-    peerMediaElements.current[LOCAL_VIDEO].srcObject = localMediaStream.current;
+    setTimeout(() => {
+      peerMediaElements.current[LOCAL_VIDEO].srcObject = localMediaStream.current;
+    }, 0);
   };
 
   const isClientVideoEnabled = (id: string) => {
@@ -407,19 +424,52 @@ export const useWebRTC = () => {
     setUserScreenShares((prev) => ({ ...prev, [peerId]: enabled }));
   };
 
+  const handleSendMessage = ({
+    peerName,
+    message,
+  }: {
+    peerName: string;
+    message: { messageText: string; messageDate: string };
+  }) => {
+    const { messageText, messageDate: dirtyMessageDate } = message;
+    const messageDate = toDateHHMMSS(dirtyMessageDate);
+
+    setClientMessages((prev) => {
+      if (prev[peerName]) {
+        const peerMessages = prev[peerName];
+        peerMessages.push({ messageText, messageDate });
+
+        return {
+          ...prev,
+          [peerName]: peerMessages,
+        };
+      }
+      return {
+        ...prev,
+        [peerName]: [
+          {
+            messageText,
+            messageDate,
+          },
+        ],
+      };
+    });
+  };
+
   return {
     clients,
     provideMediaRef,
     micActive,
     cameraActive,
+    screenShareActive,
+    chatActive,
     getAudioTracks,
     getVideoTracks,
     toggleMic,
     toggleCamera,
+    toggleScreenShare,
+    toggleChat,
     leaveRoom,
-    startScreenShare,
-    stopScreenShare,
-    screenShareActive,
     reloadLocalStream,
     isClientVideoEnabled,
     isClientAudioEnabled,
@@ -430,5 +480,8 @@ export const useWebRTC = () => {
     clientName,
     setClientName,
     getClientName,
+    message,
+    setMessage,
+    clientMessages,
   };
 };

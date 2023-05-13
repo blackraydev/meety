@@ -1,10 +1,10 @@
 import { useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useRoom } from '../RoomContext';
 import { Video } from '../../../../components';
 import { LOCAL_VIDEO } from '../../../../constants/localVideo';
-import { useForceUpdate } from '../../../../hooks/useForceUpdate';
+import { RoomChat } from '..';
 import * as UI from './RoomContent.styles';
-import { useTranslation } from 'react-i18next';
 
 export const RoomContent = () => {
   const {
@@ -18,39 +18,38 @@ export const RoomContent = () => {
     getClientName,
     cameraActive,
     micActive,
+    chatActive,
   } = useRoom();
 
   const { t } = useTranslation();
-  const forceUpdate = useForceUpdate();
 
   useEffect(() => {
     reloadLocalStream();
   }, []);
 
-  useEffect(() => {
-    forceUpdate();
-  }, [clients]);
-
   return (
-    <UI.RoomContent>
-      {clients.map((clientId) => {
-        const currentUser = clientId === LOCAL_VIDEO;
-        return (
-          <Video
-            key={clientId}
-            ref={(instance) => provideMediaRef(clientId, instance as HTMLVideoElement)}
-            mirrored={!screenShareActive && currentUser}
-            name={currentUser ? t('you') : getClientName(clientId)}
-            muted={currentUser}
-            loading={false}
-            videoDisabled={currentUser ? !cameraActive : !isClientVideoEnabled(clientId)}
-            audioDisabled={currentUser ? !micActive : !isClientAudioEnabled(clientId)}
-            screenShareDisabled={
-              currentUser ? !screenShareActive : !isClientScreenShareEnabled(clientId)
-            }
-          />
-        );
-      })}
+    <UI.RoomContent panelActive={chatActive}>
+      <UI.VideosWrapper>
+        {clients.map((clientId) => {
+          const currentUser = clientId === LOCAL_VIDEO;
+          return (
+            <Video
+              key={clientId}
+              ref={(instance) => provideMediaRef(clientId, instance as HTMLVideoElement)}
+              mirrored={!screenShareActive && currentUser}
+              name={currentUser ? t('you') : getClientName(clientId)}
+              muted={currentUser}
+              loading={false}
+              videoDisabled={currentUser ? !cameraActive : !isClientVideoEnabled(clientId)}
+              audioDisabled={currentUser ? !micActive : !isClientAudioEnabled(clientId)}
+              screenShareDisabled={
+                currentUser ? !screenShareActive : !isClientScreenShareEnabled(clientId)
+              }
+            />
+          );
+        })}
+      </UI.VideosWrapper>
+      <RoomChat active={chatActive} />
     </UI.RoomContent>
   );
 };
