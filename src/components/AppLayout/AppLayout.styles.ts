@@ -14,6 +14,11 @@ export const GlobalStyles = createGlobalStyle`
     list-style: none;
     font-family: 'Rubik', sans-serif;
   }
+
+  html {
+    background: ${({ theme }) => theme.colors.main};
+    overflow: hidden;
+  }
 `;
 
 export const Layout = styled.div`

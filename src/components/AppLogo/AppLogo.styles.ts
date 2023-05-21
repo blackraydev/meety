@@ -5,4 +5,8 @@ export const AppLogo = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
+
+  svg {
+    transition: 0.3s ease;
+  }
 `;

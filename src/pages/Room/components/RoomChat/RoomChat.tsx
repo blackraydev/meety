@@ -3,7 +3,6 @@ import { useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useSocket } from '../../../../components';
 import { SocketEventTypes } from '../../../../constants';
-import { toStringDateHHMM } from '../../../../lib';
 import { Drawer } from '../../../../UI';
 import { useRoom } from '../';
 import * as UI from './RoomChat.styles';
@@ -34,43 +33,36 @@ export const RoomChat = () => {
   };
 
   const renderMessages = () => {
-    const clientNames = Object.keys(clientMessages);
-
-    if (!clientNames.length) {
+    if (!clientMessages.length) {
       return <UI.NoMessagesText>{t('noMessagesYet')}</UI.NoMessagesText>;
     }
 
-    return clientNames.map((clientName) => {
-      let messageFullView = true;
+    return clientMessages.map((message, index) => {
+      const currentMessageTime = message.messageDate;
+      const currentMessageClientName = message.clientName;
 
-      return clientMessages[clientName].map((message, index) => {
-        const currentMessageTime = toStringDateHHMM(message.messageDate);
+      if (index > 0) {
+        const prevMessage = clientMessages[index - 1];
+        const prevMessageTime = prevMessage.messageDate;
+        const prevMessageClientName = prevMessage.clientName;
 
-        if (index > 0) {
-          const prevMessage = clientMessages[clientName][index - 1];
-          const prevMessageTime = toStringDateHHMM(prevMessage.messageDate);
-
-          if (!messageFullView && currentMessageTime === prevMessageTime) {
-            return (
-              <UI.MessageText key={message.messageDate.toString()}>
-                {message.messageText}
-              </UI.MessageText>
-            );
-          }
+        if (
+          currentMessageTime === prevMessageTime &&
+          currentMessageClientName === prevMessageClientName
+        ) {
+          return <UI.MessageText key={index}>{message.messageText}</UI.MessageText>;
         }
+      }
 
-        messageFullView = false;
-
-        return (
-          <UI.MessageWrapper key={message.messageDate.toString()}>
-            <UI.MessageHeader>
-              <UI.UserName>{clientName}</UI.UserName>
-              <UI.MessageTime>{currentMessageTime}</UI.MessageTime>
-            </UI.MessageHeader>
-            <UI.MessageText>{message.messageText}</UI.MessageText>
-          </UI.MessageWrapper>
-        );
-      });
+      return (
+        <UI.MessageWrapper key={index}>
+          <UI.MessageHeader>
+            <UI.UserName>{currentMessageClientName}</UI.UserName>
+            <UI.MessageTime>{currentMessageTime}</UI.MessageTime>
+          </UI.MessageHeader>
+          <UI.MessageText>{message.messageText}</UI.MessageText>
+        </UI.MessageWrapper>
+      );
     });
   };
 

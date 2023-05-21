@@ -1,2 +1,3 @@
 export * from './translations';
-export * from './date-without-zone';
+export * from './date';
+export * from './name';

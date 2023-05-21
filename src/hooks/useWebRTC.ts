@@ -4,7 +4,7 @@ import { LOCAL_VIDEO } from '../constants/localVideo';
 import { PagesRoutes, SocketEventTypes } from '../constants';
 import { useStateWithCallback } from './useStateWithCallback';
 import { useSocket } from '../components';
-import { toDateHHMMSS } from '../lib';
+import { toStringDateHHMM } from '../lib';
 
 const ICE_SERVERS = [
   {
@@ -36,10 +36,10 @@ export const useWebRTC = () => {
   const [userScreenShares, setUserScreenShares] = useState<{ [key: string]: boolean }>({});
 
   // All users data
-  const [clientMessages, setClientMessages] = useState<{
-    [key: string]: Array<{ messageText: string; messageDate: Date }>;
-  }>({});
   const [clients, updateClients] = useStateWithCallback<string[]>([]);
+  const [clientMessages, setClientMessages] = useState<
+    Array<{ clientName: string; messageText: string; messageDate: string }>
+  >([]);
   const peerConnections = useRef<{ [key: string]: RTCPeerConnection }>({});
   const peerMediaElements = useRef<{ [key: string]: HTMLVideoElement }>({
     [LOCAL_VIDEO]: null as unknown as HTMLVideoElement,
@@ -261,8 +261,8 @@ export const useWebRTC = () => {
       .getUserMedia({
         audio: true,
         video: {
-          width: 500,
-          height: 500,
+          width: 1920,
+          height: 1080,
         },
       })
       .then((stream) => {
@@ -437,28 +437,16 @@ export const useWebRTC = () => {
     message: { messageText: string; messageDate: string };
   }) => {
     const { messageText, messageDate: dirtyMessageDate } = message;
-    const messageDate = toDateHHMMSS(dirtyMessageDate);
+    const messageDate = toStringDateHHMM(new Date(dirtyMessageDate));
 
-    setClientMessages((prev) => {
-      if (prev[peerName]) {
-        const peerMessages = prev[peerName];
-        peerMessages.push({ messageText, messageDate });
-
-        return {
-          ...prev,
-          [peerName]: peerMessages,
-        };
-      }
-      return {
-        ...prev,
-        [peerName]: [
-          {
-            messageText,
-            messageDate,
-          },
-        ],
-      };
-    });
+    setClientMessages((prev) => [
+      ...prev,
+      {
+        clientName: peerName,
+        messageDate,
+        messageText,
+      },
+    ]);
   };
 
   return {

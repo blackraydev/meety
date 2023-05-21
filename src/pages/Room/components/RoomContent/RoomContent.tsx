@@ -1,5 +1,4 @@
 import { useEffect } from 'react';
-import { useTranslation } from 'react-i18next';
 import { useRoom } from '../RoomContext';
 import { Video } from '../../../../components';
 import { LOCAL_VIDEO } from '../../../../constants/localVideo';
@@ -20,9 +19,8 @@ export const RoomContent = () => {
     micActive,
     chatActive,
     participantsActive,
+    clientName,
   } = useRoom();
-
-  const { t } = useTranslation();
 
   useEffect(() => {
     reloadLocalStream();
@@ -38,8 +36,9 @@ export const RoomContent = () => {
               key={clientId}
               ref={(instance) => provideMediaRef(clientId, instance as HTMLVideoElement)}
               mirrored={!screenShareActive && currentUser}
-              name={currentUser ? t('you') : getClientName(clientId)}
+              name={currentUser ? clientName : getClientName(clientId)}
               muted={currentUser}
+              capacity={clients.length}
               loading={false}
               videoDisabled={currentUser ? !cameraActive : !isClientVideoEnabled(clientId)}
               audioDisabled={currentUser ? !micActive : !isClientAudioEnabled(clientId)}

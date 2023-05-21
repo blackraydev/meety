@@ -10,7 +10,7 @@ export const RoomContent = styled.div<RoomContentStyleProps>`
   justify-content: center;
   align-items: center;
   margin-top: 100px;
-  width: 100%;
+  height: 100%;
   width: ${({ panelActive }) => `calc(100% - ${panelActive ? 420 : 0}px)`};
 `;
 
@@ -19,6 +19,7 @@ export const VideosWrapper = styled.div`
   align-items: center;
   justify-content: center;
   flex-wrap: wrap;
+  width: 100%;
   gap: 20px;
   padding: 0 20px;
 `;

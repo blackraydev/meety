@@ -6,9 +6,9 @@ type DrawerStyleProps = {
 };
 
 export const Drawer = styled.div<DrawerStyleProps>`
+  display: flex;
   transition: 0.3s ease;
   position: absolute;
-  display: flex;
   flex-direction: column;
   background: ${({ theme }) => theme.colors.primary};
   width: 400px;

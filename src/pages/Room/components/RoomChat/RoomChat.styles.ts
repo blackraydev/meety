@@ -38,6 +38,7 @@ export const MessageText = styled.p`
   font-size: 16px;
   color: ${({ theme }) => theme.colors.primaryText};
   margin-top: 10px;
+  word-wrap: break-word;
 `;
 
 export const MessageSendWrapper = styled.div`
@@ -51,6 +52,7 @@ export const MessageSendWrapper = styled.div`
 export const MessageInput = styled(Input)`
   width: 100%;
   background: ${({ theme }) => theme.colors.main};
+  padding-right: 50px;
 `;
 
 export const SendIcon = styled(IoSendSharp)<SendIconStyleProps>`

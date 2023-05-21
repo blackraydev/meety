@@ -5,6 +5,7 @@ import { IoVideocam, IoVideocamOff } from 'react-icons/io5';
 import { LOCAL_VIDEO } from '../../../../constants/localVideo';
 import { Drawer } from '../../../../UI';
 import { useRoom } from '../';
+import { getNameInitials } from '../../../../lib';
 import * as UI from './RoomParticipants.styles';
 
 export const RoomParticipants = () => {
@@ -58,20 +59,19 @@ export const RoomParticipants = () => {
           return isClientVideoEnabled(clientId) ? EnabledVideo : DisabledVideo;
         };
 
-        // TODO !!!
-        // const renderContextMenu = () => {}
-
         return (
           <UI.Participant key={clientId}>
             <UI.ParticipantPhoto>
-              <UI.ParticipantPhotoLabel>RS</UI.ParticipantPhotoLabel>
+              <UI.ParticipantPhotoLabel>
+                {getNameInitials(participantName)}
+              </UI.ParticipantPhotoLabel>
             </UI.ParticipantPhoto>
             <UI.ParticipantData>
               <UI.ParticipantName>
                 {participantName}
                 {currentUser && <UI.YouText>{t('you')}</UI.YouText>}
               </UI.ParticipantName>
-              <UI.ParticipantRole>Moderator</UI.ParticipantRole>
+              <UI.ParticipantRole>Participant</UI.ParticipantRole>
             </UI.ParticipantData>
             <UI.ParticipantMedia>
               {renderAudioStatus()}

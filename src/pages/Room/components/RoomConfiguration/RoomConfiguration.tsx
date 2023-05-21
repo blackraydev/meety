@@ -29,8 +29,8 @@ export const RoomConfiguration = () => {
         videoDisabled={!cameraActive}
         audioDisabled={!micActive}
         screenShareDisabled={!screenShareActive}
-        name={t('you')}
         loading={false}
+        singleMode
         mirrored
         muted
       />

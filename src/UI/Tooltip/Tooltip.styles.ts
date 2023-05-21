@@ -23,6 +23,7 @@ export const Tooltip = styled.div<TooltipStyleProps>`
   line-height: 1;
   white-space: nowrap;
   z-index: 1001;
+  box-shadow: 0px 0px 5px 1px ${({ theme }) => theme.colors.main};
 
   &::before {
     transition: 0.3s ease;

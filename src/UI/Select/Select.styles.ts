@@ -58,6 +58,7 @@ export const OptionsList = styled.ul`
   background: ${({ theme }) => theme.colors.primary};
   border-radius: 16px;
   overflow: hidden;
+  box-shadow: 0px 0px 5px 1px ${({ theme }) => theme.colors.main};
 `;
 
 export const OptionItem = styled.li`
