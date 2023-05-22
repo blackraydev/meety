@@ -2,7 +2,7 @@ import styled from 'styled-components';
 
 export const Loader = styled.div`
   position: relative;
-  width: 48px;
+  width: 32px;
   z-index: 1000;
 
   &:before {

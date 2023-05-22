@@ -2,15 +2,15 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { v4 } from 'uuid';
+import { checkRoomExistence } from '../../api/rooms';
 import { PagesRoutes } from '../../constants';
 import { useToast } from '../../UI/Toast';
-import { checkRoomExistence } from './Home.api';
 import * as UI from './Home.styles';
 
 export const Home = () => {
-  const { addToast } = useToast();
-  const { t } = useTranslation();
   const navigate = useNavigate();
+  const { t } = useTranslation();
+  const { addToast } = useToast();
   const [roomId, setRoomId] = useState('');
 
   const handleJoinRoomClick = () => {
@@ -28,6 +28,17 @@ export const Home = () => {
   const handleCreateRoomClick = () => {
     navigate(`${PagesRoutes.Room}/${v4()}`);
   };
+
+  // TODO: Implement authorization
+  // const renderAuthFooter = () => {
+  //   return (
+  //     <UI.AuthWrapper>
+  //       <UI.AuthLink to={PagesRoutes.Auth}>{t('auth')}</UI.AuthLink>
+  //       {'/'}
+  //       <UI.AuthLink to={PagesRoutes.Register}>{t('register')}</UI.AuthLink>
+  //     </UI.AuthWrapper>
+  //   );
+  // };
 
   return (
     <UI.Home>

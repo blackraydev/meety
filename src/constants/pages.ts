@@ -6,4 +6,7 @@ export enum Pages {
 export enum PagesRoutes {
   Home = '/',
   Room = '/room',
+  Auth = '/auth',
+  Register = '/register',
+  Dashboard = '/dashboard',
 }

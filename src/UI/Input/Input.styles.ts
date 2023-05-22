@@ -8,7 +8,7 @@ export const Wrapper = styled.div`
 
 export const Label = styled.label`
   font-size: 16px;
-  color: ${({ theme }) => theme.colors.white};
+  color: ${({ theme }) => theme.colors.primaryText};
   margin-bottom: 10px;
   margin-left: 10px;
 `;

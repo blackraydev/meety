@@ -32,6 +32,11 @@
         "message": "Message",
         "chat": "Chat",
         "participants": "Participants",
-        "noMessagesYet": "No messages yet"
+        "noMessagesYet": "No messages yet",
+        "auth": "Sign in",
+        "register": "Registration",
+        "allFieldsMustBeFilled": "All fields must be filled",
+        "invalidEmailFormat": "Invalid email format",
+        "passwordsNotMatch": "Passwords don't match"
     }
 }

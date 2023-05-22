@@ -32,6 +32,11 @@
         "message": "Сообщение",
         "chat": "Чат",
         "participants": "Участники",
-        "noMessagesYet": "Пока нет сообщений"
+        "noMessagesYet": "Пока нет сообщений",
+        "auth": "Вход в аккаунт",
+        "register": "Регистрация",
+        "allFieldsMustBeFilled": "Необходимо заполнить все поля",
+        "invalidEmailFormat": "Неверный формат электронной почты",
+        "passwordsNotMatch": "Пароли не совпадают"
     }
 }
