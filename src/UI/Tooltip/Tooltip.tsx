@@ -22,7 +22,7 @@ export const Tooltip = ({
   const timeoutRef = useRef<number>();
 
   const showTooltip = () => {
-    timeoutRef.current = setTimeout(() => {
+    timeoutRef.current = window.setTimeout(() => {
       setActive(true);
     }, delay);
   };
