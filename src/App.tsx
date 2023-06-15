@@ -1,4 +1,4 @@
-import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import { HashRouter, Route, Routes } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { ToastContextProvider } from './UI/Toast/ToastContext';
 import { AppLayout, AppThemeProvider, SocketProvider } from './components';
@@ -20,7 +20,7 @@ const App = () => {
   // };
 
   return (
-    <BrowserRouter>
+    <HashRouter>
       <AppThemeProvider>
         <QueryClientProvider client={queryClient}>
           <SocketProvider>
@@ -35,7 +35,7 @@ const App = () => {
           </SocketProvider>
         </QueryClientProvider>
       </AppThemeProvider>
-    </BrowserRouter>
+    </HashRouter>
   );
 };
 
